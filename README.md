@@ -2,7 +2,7 @@
 This repository is a template for your CMPT 340 course project.
 Replace the title with your project title, and **add a snappy acronym that people remember (mnemonic)**.
 
-Project based on reading EEG MuseBand data.
+Project based on reading EEG data from Muse headband data.
 
 ## Important Links
 
