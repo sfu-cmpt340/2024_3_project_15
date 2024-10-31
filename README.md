@@ -58,6 +58,16 @@ repository
 
 ## 2. Installation
 
+Set up virutal environment
+
+1. Create virtual environment
+    - `python -m venv .venv`
+2. Activate virutal environment
+    - Windows: `.\.venv\Scripts\activate`
+    - Mac: `source ./venv/bin/activate`
+3. Download packages
+    - `pip install -r requirements.yml`
+
 Provide sufficient instructions to reproduce and install your project. 
 Provide _exact_ versions, test on CSIL or reference workstations.
 
