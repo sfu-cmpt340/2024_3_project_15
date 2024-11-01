@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Set threshold based on observation and analysis of data
+min_threshold = 700
+max_threshold = 900
+
 # Read EEG data for scrolling down
 scrolling_down_eeg_df = pd.read_csv("./Jimmy/scrolling_down_60_1_jimmy.csv")
 scrolling_down_eeg_df = scrolling_down_eeg_df[["timestamps", "eeg_1", "eeg_2", "eeg_3"]]
@@ -20,6 +24,21 @@ scrolling_up_eeg_df["timestamps"] = pd.to_datetime(
 scrolling_up_eeg_df["seconds_elapsed"] = (
     scrolling_up_eeg_df["timestamps"] - scrolling_up_eeg_df["timestamps"].iloc[0]
 ).dt.total_seconds()
+
+# Filter for EEG values within threshold for each EEG column
+scrolling_down_eeg_df = scrolling_down_eeg_df[
+    (scrolling_down_eeg_df["eeg_1"].between(min_threshold, max_threshold)) &
+    (scrolling_down_eeg_df["eeg_2"].between(min_threshold, max_threshold)) &
+    (scrolling_down_eeg_df["eeg_3"].between(min_threshold, max_threshold))
+]
+
+# Apply threshold filter for scrolling up
+scrolling_up_eeg_df = scrolling_up_eeg_df[
+    (scrolling_up_eeg_df["eeg_1"].between(min_threshold, max_threshold)) &
+    (scrolling_up_eeg_df["eeg_2"].between(min_threshold, max_threshold)) &
+    (scrolling_up_eeg_df["eeg_3"].between(min_threshold, max_threshold))
+]
+
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
 
