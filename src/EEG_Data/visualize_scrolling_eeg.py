@@ -6,7 +6,7 @@ min_threshold = 775
 max_threshold = 850
 
 # Read EEG data for scrolling down
-scrolling_down_eeg_df = pd.read_csv("./Jimmy/scrolling_down_60_1_jimmy.csv")
+scrolling_down_eeg_df = pd.read_csv("./Brian/scrolling_down_60_1_Brian.csv")
 scrolling_down_eeg_df = scrolling_down_eeg_df[["timestamps", "eeg_1", "eeg_2", "eeg_3"]]
 scrolling_down_eeg_df["timestamps"] = pd.to_datetime(
     scrolling_down_eeg_df["timestamps"], unit="s"
@@ -16,7 +16,7 @@ scrolling_down_eeg_df["seconds_elapsed"] = (
 ).dt.total_seconds()
 
 # Read EEG data for scrolling up
-scrolling_up_eeg_df = pd.read_csv("./Jimmy/scrolling_up_60_1_jimmy.csv")
+scrolling_up_eeg_df = pd.read_csv("./Brian/scrolling_up_60_1_Brian.csv")
 scrolling_up_eeg_df = scrolling_up_eeg_df[["timestamps", "eeg_1", "eeg_2", "eeg_3"]]
 scrolling_up_eeg_df["timestamps"] = pd.to_datetime(
     scrolling_up_eeg_df["timestamps"], unit="s"
