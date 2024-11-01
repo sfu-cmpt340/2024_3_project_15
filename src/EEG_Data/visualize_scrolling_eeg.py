@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Set threshold based on observation and analysis of data
-min_threshold = 700
-max_threshold = 900
+min_threshold = 775
+max_threshold = 850
 
 # Read EEG data for scrolling down
 scrolling_down_eeg_df = pd.read_csv("./Jimmy/scrolling_down_60_1_jimmy.csv")
