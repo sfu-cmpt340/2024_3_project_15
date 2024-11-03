@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Set threshold based on observation and analysis of data
-min_threshold = 775
-max_threshold = 850
+min_threshold = 0
+max_threshold = 2000
 
 # Read EEG data for scrolling down
 scrolling_down_eeg_df = pd.read_csv("./Brian/scrolling_down_60_1_Brian.csv")
@@ -46,16 +46,19 @@ ax1.plot(
     scrolling_down_eeg_df["seconds_elapsed"],
     scrolling_down_eeg_df["eeg_1"],
     label="EEG 1",
+    color = "blue"
 )
 ax1.plot(
     scrolling_down_eeg_df["seconds_elapsed"],
     scrolling_down_eeg_df["eeg_2"],
     label="EEG 2",
+    color = "orange"
 )
 ax1.plot(
     scrolling_down_eeg_df["seconds_elapsed"],
     scrolling_down_eeg_df["eeg_3"],
     label="EEG 3",
+    color = "green"
 )
 ax1.set_title("EEG Signals Over Time (Scrolling down)")
 ax1.set_ylabel("EEG Signal")
@@ -63,13 +66,13 @@ ax1.legend()
 ax1.grid(True)
 
 ax2.plot(
-    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_1"], label="EEG 1"
+    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_1"], color = "blue", label="EEG 1"
 )
 ax2.plot(
-    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_2"], label="EEG 2"
+    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_2"], color = "orange", label="EEG 2"
 )
 ax2.plot(
-    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_3"], label="EEG 3"
+    scrolling_up_eeg_df["seconds_elapsed"], scrolling_up_eeg_df["eeg_3"], color = "green", label="EEG 3"
 )
 ax2.set_title("EEG Signals Over Time (Scrolling up)")
 ax2.set_xlabel("Time (seconds)")
