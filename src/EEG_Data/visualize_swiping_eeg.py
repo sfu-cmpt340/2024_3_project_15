@@ -12,10 +12,10 @@ def load_eeg_data(filename):
     return df
 
 
-swiping_up_eeg_df = load_eeg_data("./Ethan/museFiles/swiping_up_60_1_ethan.csv")
-swiping_left_eeg_df = load_eeg_data("Ethan/museFiles/swiping_left_60_1_ethan.csv")
-swiping_down_eeg_df = load_eeg_data("./Ethan/museFiles/swiping_down_60_1_ethan.csv")
-swiping_right_eeg_df = load_eeg_data("./Ethan/museFiles/swiping_right_60_1_ethan.csv")
+swiping_up_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_up_60_1_gilbert.csv")
+swiping_left_eeg_df = load_eeg_data("./Gilbert/museFiles/swipe_left_60_1_gilbert.csv")
+swiping_down_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_down_60_1_gilbert.csv")
+swiping_right_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_right_60_1_gilbert.csv")
 
 fig, axes = plt.subplots(2, 2, figsize=(14, 12), sharex=True)
 
