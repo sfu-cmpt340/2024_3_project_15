@@ -6,15 +6,15 @@ from scipy.fft import fft
 
 # Load datasets 
 scrolling_datasets = {
-    'Scrolling Down': pd.read_csv('./Ethan/museFiles/scrolling_down_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
-    'Scrolling Up': pd.read_csv('./Ethan/museFiles/scrolling_up_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
+    'Scrolling Down': pd.read_csv('./Jimmy/museFiles/scrolling_down_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
+    'Scrolling Up': pd.read_csv('./Jimmy/museFiles/scrolling_up_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
 }
 
 swiping_datasets = {
-    'Swipe Left': pd.read_csv('./Ethan/museFiles/swiping_left_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
-    'Swipe Right': pd.read_csv('./Ethan/museFiles/swiping_right_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
-    'Swipe Up': pd.read_csv('./Ethan/museFiles/swiping_up_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
-    'Swipe Down': pd.read_csv('./Ethan/museFiles/swiping_down_60_1_ethan.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']]
+    'Swipe Left': pd.read_csv('./Jimmy/museFiles/swiping_left_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
+    'Swipe Right': pd.read_csv('./Jimmy/museFiles/swiping_right_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
+    'Swipe Up': pd.read_csv('./Jimmy/museFiles/swiping_up_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']],
+    'Swipe Down': pd.read_csv('./Jimmy/museFiles/swiping_down_60_1_jimmy.csv')[['timestamps', 'eeg_1', 'eeg_2', 'eeg_3']]
 }
 
 # Initialize dictionary to store extracted features
