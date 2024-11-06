@@ -7,10 +7,10 @@ Get std deviation of each signal and direction and compare:
 
 import pandas as pd
 
-scrolling_down_eeg_df = pd.read_csv("./Brian/scrolling_down_60_1_Brian.csv")
+scrolling_down_eeg_df = pd.read_csv("./Ethan/museFiles/scrolling_down_60_1_ethan.csv")
 scrolling_down_eeg_df = scrolling_down_eeg_df[["timestamps", "eeg_1", "eeg_2", "eeg_3"]]
 
-scrolling_up_eeg_df = pd.read_csv("./Brian/scrolling_up_60_1_Brian.csv")
+scrolling_up_eeg_df = pd.read_csv("./Ethan/museFiles/scrolling_up_60_1_ethan.csv")
 scrolling_up_eeg_df = scrolling_up_eeg_df[["timestamps", "eeg_1", "eeg_2", "eeg_3"]]
 
 std_devs_table = pd.DataFrame(
