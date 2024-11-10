@@ -33,3 +33,24 @@ def clean_df(df: pd.DataFrame, std_threshold: float = 3.0) -> pd.DataFrame:
     cleaned_df = cleaned_df.interpolate(method="linear", limit_direction="both")
 
     return cleaned_df
+
+
+def get_pca(df: pd.DataFrame, n_components: int = 1) -> pd.DataFrame:
+    """
+    Perform Principal Component Analysis (PCA) on a DataFrame.
+
+    Parameters:
+    - df: pd.DataFrame - The input DataFrame with numeric data
+    - n_components: int - The number of principal components to retain
+
+    Returns:
+    - pd.DataFrame - The transformed DataFrame with principal components
+    """
+    from sklearn.decomposition import PCA
+
+    pca = PCA(n_components=n_components)
+    components = pca.fit_transform(df)
+
+    return pd.DataFrame(
+        data=components, columns=[f"PC{i+1}" for i in range(n_components)]
+    )
