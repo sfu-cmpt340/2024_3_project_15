@@ -7,7 +7,7 @@ import pandas as pd
 from clean_data import clean_df, get_pca
 
 
-directory = "./museFiles"
+directory = "./Cleaned_Data"
 output_filepath = "output.csv"
 header_written = False
 
@@ -15,11 +15,11 @@ for filename in os.listdir(directory):
     if filename.endswith(".csv"):
 
         filepath = os.path.join(directory, filename)
-        print(filepath)
 
         df = pd.read_csv(filepath)
-        df = df[["timestamps", "eeg_1", "eeg_2", "eeg_3", "eeg_4"]]
+        df = df[["eeg_1", "eeg_2", "eeg_3", "eeg_4"]]
 
+        print(filepath, len(df))
         # Clean the data
         df = clean_df(df)
         df = get_pca(df)
