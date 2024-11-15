@@ -83,37 +83,53 @@ def clean_eeg_data(eeg_data, timestamps, sampling_rate=256):
         cleaned_data[:, ch] = cleaned_channel
     return cleaned_data
 
-def load_and_prepare_data(file_path):
-    """Load and prepare EEG data from CSV file with validation"""
+def load_and_prepare_data(file_path, max_rows=8000):
+    """Load and prepare EEG data from CSV file with validation, processing only the first max_rows rows"""
     try:
-        df = pd.read_csv(file_path)
+        # Read only the first max_rows rows from the CSV file
+        df = pd.read_csv(file_path, nrows=max_rows)
+
+        # Verify required columns exist
         required_columns = ['timestamps', 'eeg_1', 'eeg_2', 'eeg_3', 'eeg_4']
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             raise ValueError(f"Missing required columns: {missing_columns}")
+
+        # Convert timestamps and EEG data to numeric, replacing any non-numeric values with NaN
         df['timestamps'] = pd.to_numeric(df['timestamps'], errors='coerce')
         eeg_columns = ['eeg_1', 'eeg_2', 'eeg_3', 'eeg_4']
         for col in eeg_columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        # Check for NaN values
         nan_counts = df[required_columns].isna().sum()
         if nan_counts.any():
             print("Warning: Found NaN values in the following columns:")
             print(nan_counts[nan_counts > 0])
+
+            # Fill NaN values with interpolation
             df[eeg_columns] = df[eeg_columns].interpolate(method='linear', limit_direction='both')
+
         timestamps = df['timestamps'].values
         eeg_data = df[eeg_columns].values
+
+        # Verify data is not empty
         if len(timestamps) == 0 or eeg_data.size == 0:
             raise ValueError("No data found in the file after processing")
+
+        # Check for remaining NaN values
         if np.isnan(eeg_data).any():
             raise ValueError("NaN values still present in EEG data after interpolation")
+
         return timestamps, eeg_data
+
     except Exception as e:
         print(f"Error in load_and_prepare_data: {str(e)}")
         raise
 
 if __name__ == "__main__":
     # Specify the directory containing the CSV files
-    directory = "./Jimmy/museFiles"  # Update this path to your directory
+    directory = "./Brian/museFilesFamily"  # Update this path to your directory
 
     # Create a directory for cleaned files if it doesn't exist
     cleaned_directory = os.path.join(directory, "cleaned_files")
@@ -129,8 +145,8 @@ if __name__ == "__main__":
             try:
                 print(f"\nProcessing file: {file_path}")
 
-                # Load and prepare the data
-                timestamps, eeg_data = load_and_prepare_data(file_path)
+                # Load and prepare the data (processing only the first 8000 rows)
+                timestamps, eeg_data = load_and_prepare_data(file_path, max_rows=8000)
 
                 # Verify data loaded correctly
                 print("Data loaded successfully.")
