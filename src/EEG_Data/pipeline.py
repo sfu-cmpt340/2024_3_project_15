@@ -3,9 +3,9 @@ Used for cleaning and processing the data into a format suitable for Azure machi
 """
 
 import os
+
 import pandas as pd
 from clean_data import clean_df, get_pca
-
 
 directory = "./Cleaned_Data"
 output_filepath = "output.csv"
@@ -20,10 +20,10 @@ for filename in os.listdir(directory):
         df = df[["eeg_1", "eeg_2", "eeg_3", "eeg_4"]]
 
         print(filepath, len(df))
-        # Clean the data
-        df = clean_df(df)
+
+        # Flatten into a single column
+        # df = pd.DataFrame(df.values.flatten(), columns=["value"])
         df = get_pca(df)
-        df = df.head(8000)
         df = df.T
         df = df.reset_index(drop=True)
 
@@ -34,7 +34,6 @@ for filename in os.listdir(directory):
             df["direction"] = 1
 
         df.to_csv(output_filepath, mode="a", index=False, header=not header_written)
-
         header_written = True
 
 final_df = pd.read_csv(output_filepath)

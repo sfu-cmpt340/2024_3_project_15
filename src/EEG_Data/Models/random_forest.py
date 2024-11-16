@@ -1,36 +1,52 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
+# Load the dataset
 df = pd.read_csv("../output.csv")
+df = df.drop(
+    columns=[
+        "filename",
+        "eeg_1_dominant_freq",
+        "eeg_2_dominant_freq",
+        "eeg_3_dominant_freq",
+        "eeg_4_dominant_freq",
+    ]
+)
+df = df[[col for col in df.columns if col != "direction"] + ["direction"]]
 
-# Get all columsn except the last one
+# Define features and target
 x = df.iloc[:, :-1]
-
-# Get the last column (target)
 y = df.iloc[:, -1]
 
-# Split the dataset into training and testing sets
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, test_size=0.2, random_state=99
-)
+# Testing random states from 1 to 100
+best_random_state = None
+best_accuracy = 0
+results = []
 
-clf = RandomForestClassifier(
-    criterion="gini", max_depth=8, min_samples_split=10, random_state=5
-)
+for random_state in range(1, 101):
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, train_size=0.8, test_size=0.2, random_state=random_state
+    )
 
-clf.fit(x_train, y_train)
-y_pred = clf.predict(x_test)
+    clf = RandomForestClassifier(
+        criterion="gini", max_depth=8, min_samples_split=10, random_state=random_state
+    )
 
-print("Confusion Matrix")
-print(confusion_matrix(y_test, y_pred))
+    clf.fit(x_train, y_train)
+    y_pred = clf.predict(x_test)
+    accuracy = accuracy_score(y_test, y_pred)
 
-print("Accuracy")
-print(accuracy_score(y_test, y_pred))
+    # Store the results
+    results.append((random_state, accuracy))
 
-print("Cross Validation")
-print(cross_val_score(clf, x_train, y_train, cv=10))
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_random_state = random_state
 
-print("Classification Report")
-print(classification_report(y_pred, y_test))
+# Display all results
+results_df = pd.DataFrame(results, columns=["Random State", "Accuracy"])
+print(results_df.sort_values(by="Accuracy", ascending=False))
+average_accuracy = sum([result[1] for result in results]) / len(results)
+print("Average Accuracy:", average_accuracy)
