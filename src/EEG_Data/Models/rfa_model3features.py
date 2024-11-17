@@ -2,12 +2,11 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import ParameterGrid, train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Load your data into a DataFrame
 data = pd.read_json("../output.json", lines=True)
-
 
 # Separate features and labels
 X = data.drop(columns=["filename", "direction"])
@@ -17,51 +16,53 @@ y = data["direction"]
 print(f"Dataset shape: {X.shape}")
 
 # Validate indices
-selected_features = [0, 82]  # Example indices
-if any(idx >= X.shape[1] for idx in selected_features):
-    print(f"One or more indices in {selected_features} are out of bounds!")
-    selected_features = [0, 9, 26]  # Use valid indices
+selected_features = [0, 9, 26]  # Valid feature indices
+X_selected = X.iloc[:, selected_features]
 
-# Scaler for normalization
+# Normalize features
 scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_selected)
 
-# Parameters
-n_iterations = 100  # Number of random seeds to test
-random_seeds = np.random.randint(0, 10000, size=n_iterations)  # Generate random seeds
+# Define the hyperparameter grid
+param_grid = {
+    "n_estimators": [50, 100, 200],
+    "max_depth": [10, 20, None],
+    "min_samples_split": [2, 5, 10],
+    "min_samples_leaf": [1, 2, 4],
+}
 
-# Store accuracy results
-accuracies = []
+# Generate all combinations of hyperparameters
+grid = list(ParameterGrid(param_grid))
 
-# Loop through random seeds
-for seed in random_seeds:
-    print(f"Testing with random seed: {seed}")
+# Initialize to store results
+results = []
 
-    # Select specific features
-    X_selected = X.iloc[:, selected_features]
+# Evaluate each hyperparameter combination over 50 runs
+for params in grid:
+    print(f"\nEvaluating hyperparameters: {params}")
+    accuracies = []
 
-    # Train-test split with the current seed
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_selected, y, test_size=0.2, random_state=seed
-    )
+    for seed in range(50):  # 50 runs with different random seeds
+        # Train-test split with varying random seeds
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_scaled, y, train_size=0.8, test_size=0.2, random_state=seed
+        )
 
-    # Normalize
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+        # Initialize the classifier with current hyperparameters
+        clf = RandomForestClassifier(random_state=seed, **params)
 
-    # Train Random Forest Classifier
-    clf = RandomForestClassifier(n_estimators=100, random_state=seed)
-    clf.fit(X_train_scaled, y_train)
+        # Train and evaluate the model
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        accuracies.append(accuracy)
 
-    # Predict and evaluate
-    y_pred = clf.predict(X_test_scaled)
-    accuracy = accuracy_score(y_test, y_pred)
-    accuracies.append(accuracy)
-    print(f"Accuracy for seed {seed}: {accuracy}")
+    # Calculate average accuracy for this hyperparameter combination
+    avg_accuracy = np.mean(accuracies)
+    results.append({"params": params, "average_accuracy": avg_accuracy})
+    print(f"Average Accuracy over 50 runs: {avg_accuracy:.4f}")
 
-# Calculate average accuracy
-average_accuracy = np.mean(accuracies)
-print(f"\nAverage Accuracy over {n_iterations} seeds: {average_accuracy}")
-
-print(X.columns[0])  # Get the column name for feature index 26
-print(X.columns[9])  # Get the column name for feature index 26
-print(X.columns[26])  # Get the column name for feature index 26
+# Find the best hyperparameters based on average accuracy
+best_result = max(results, key=lambda x: x["average_accuracy"])
+print(f"\nBest Hyperparameters: {best_result['params']}")
+print(f"Best Average Accuracy: {best_result['average_accuracy']:.4f}")
