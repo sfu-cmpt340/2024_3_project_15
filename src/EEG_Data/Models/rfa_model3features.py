@@ -1,68 +1,90 @@
-import numpy as np
+import joblib
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import ParameterGrid, train_test_split
-from sklearn.preprocessing import StandardScaler
 
-# Load your data into a DataFrame
-data = pd.read_json("../output.json", lines=True)
+# Load the pre-trained models and scalers
+knn_model = joblib.load("./pkl_models/best_knn_model.pkl")
+rf_model = joblib.load("./pkl_models/best_random_forest_model.pkl")
+svm_model = joblib.load("./pkl_models/best_svm_model.pkl")
 
-# Separate features and labels
-X = data.drop(columns=["filename", "direction"])
-y = data["direction"]
+knn_scaler = joblib.load("./pkl_models/scaler_KNN.pkl")
+rf_scaler = joblib.load("./pkl_models/scaler_RF.pkl")
+svm_scaler = joblib.load("./pkl_models/scaler_SVM.pkl")
 
-# Verify dataset shape
-print(f"Dataset shape: {X.shape}")
+# Feature lists (ensure these match the training process)
+knn_features = [
+    "eeg_1_mean",
+    "eeg_2_mean",
+    "eeg_3_freq_std",
+]  # Replace with actual features used for KNN
+rf_features = [
+    "eeg_1_mean",
+    "eeg_2_mean",
+    "eeg_3_freq_std",
+]  # Replace with actual features used for RF
+svm_features = [
+    "eeg_1_mean",
+    "eeg_2_mean",
+    "eeg_3_freq_std",
+]  # Replace with actual features used for SVM
 
-# Validate indices
-selected_features = [0, 9, 26]  # Valid feature indices
-X_selected = X.iloc[:, selected_features]
+# Create a voting ensemble model
+voting_ensemble = VotingClassifier(
+    estimators=[
+        ("knn", knn_model),
+        ("random_forest", rf_model),
+        ("svm", svm_model),
+    ],
+    voting="hard",  # 'hard' for majority voting
+)
 
-# Normalize features
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_selected)
 
-# Define the hyperparameter grid
-param_grid = {
-    "n_estimators": [50, 100, 200],
-    "max_depth": [10, 20, None],
-    "min_samples_split": [2, 5, 10],
-    "min_samples_leaf": [1, 2, 4],
-}
+# Function to classify test data and compute accuracy
+def classify_with_ensemble(
+    test_csv_path, ensemble_model, scalers, models, feature_sets
+):
+    # Load test data
+    test_data = pd.read_csv(test_csv_path)
 
-# Generate all combinations of hyperparameters
-grid = list(ParameterGrid(param_grid))
+    # Extract labels
+    y_test = test_data["direction"]
 
-# Initialize to store results
-results = []
+    # Normalize test data for each model
+    X_test_scaled = {}
+    for model_name, features in feature_sets.items():
+        X_test = test_data[features]
+        X_test_scaled[model_name] = scalers[model_name].transform(X_test)
 
-# Evaluate each hyperparameter combination over 50 runs
-for params in grid:
-    print(f"\nEvaluating hyperparameters: {params}")
-    accuracies = []
+    # Use individual models for predictions
+    predictions_knn = models["knn"].predict(X_test_scaled["knn"])
+    predictions_rf = models["rf"].predict(X_test_scaled["rf"])
+    predictions_svm = models["svm"].predict(X_test_scaled["svm"])
 
-    for seed in range(50):  # 50 runs with different random seeds
-        # Train-test split with varying random seeds
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_scaled, y, train_size=0.8, test_size=0.2, random_state=seed
-        )
+    # Combine predictions using the ensemble
+    # Assuming ensemble works on the first normalized set (all sets should be consistent in size)
+    predictions_ensemble = ensemble_model.predict(X_test_scaled["svm"])
 
-        # Initialize the classifier with current hyperparameters
-        clf = RandomForestClassifier(random_state=seed, **params)
+    # Compute accuracy for each model and ensemble
+    accuracy_knn = accuracy_score(y_test, predictions_knn)
+    accuracy_rf = accuracy_score(y_test, predictions_rf)
+    accuracy_svm = accuracy_score(y_test, predictions_svm)
+    accuracy_ensemble = accuracy_score(y_test, predictions_ensemble)
 
-        # Train and evaluate the model
-        clf.fit(X_train, y_train)
-        y_pred = clf.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        accuracies.append(accuracy)
+    # Print accuracy results
+    print(f"KNN Model Accuracy: {accuracy_knn:.4f}")
+    print(f"Random Forest Model Accuracy: {accuracy_rf:.4f}")
+    print(f"SVM Model Accuracy: {accuracy_svm:.4f}")
+    print(f"Voting Ensemble Accuracy: {accuracy_ensemble:.4f}")
 
-    # Calculate average accuracy for this hyperparameter combination
-    avg_accuracy = np.mean(accuracies)
-    results.append({"params": params, "average_accuracy": avg_accuracy})
-    print(f"Average Accuracy over 50 runs: {avg_accuracy:.4f}")
 
-# Find the best hyperparameters based on average accuracy
-best_result = max(results, key=lambda x: x["average_accuracy"])
-print(f"\nBest Hyperparameters: {best_result['params']}")
-print(f"Best Average Accuracy: {best_result['average_accuracy']:.4f}")
+# Specify test data file path
+test_csv_path = "../test_data.csv"  # Path to the CSV file with test data
+
+# Map scalers, models, and feature sets for convenience
+scalers = {"knn": knn_scaler, "rf": rf_scaler, "svm": svm_scaler}
+models = {"knn": knn_model, "rf": rf_model, "svm": svm_model}
+feature_sets = {"knn": knn_features, "rf": rf_features, "svm": svm_features}
+
+# Classify test data and print results
+classify_with_ensemble(test_csv_path, voting_ensemble, scalers, models, feature_sets)

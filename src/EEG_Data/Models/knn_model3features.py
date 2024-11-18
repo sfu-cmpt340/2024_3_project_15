@@ -1,15 +1,14 @@
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import SelectKBest, mutual_info_classif
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
 
 # Load your data into a DataFrame
-data = pd.read_json("../output.json", lines=True)
+data = pd.read_csv("../randomized_output.csv")
 
 # Separate features and labels
 X = data.drop(columns=["filename", "direction"])
@@ -18,16 +17,13 @@ y = data["direction"]
 # Verify dataset shape
 print(f"Dataset shape: {X.shape}")
 
-# Feature selection using Mutual Information
-k_best_features = 10  # Number of features to select
-selector = SelectKBest(mutual_info_classif, k=k_best_features)
-X_selected = selector.fit_transform(X, y)
-
-selected_feature_indices = selector.get_support(indices=True)
+# Select features using specified indices
+selected_feature_indices = [0, 9, 26]
 selected_feature_names = X.columns[selected_feature_indices]
+X_selected = X.iloc[:, selected_feature_indices]
 print(f"Selected features: {selected_feature_names}")
 
-# Scaler for normalization
+# Normalize the selected features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_selected)
 
@@ -35,7 +31,7 @@ X_scaled = scaler.fit_transform(X_selected)
 k_folds = 5
 skf = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=42)
 
-# Hyperparameter grids for GridSearchCV
+# Hyperparameter grid for KNN
 param_grids = {
     "KNN": {
         "n_neighbors": [3, 5, 7, 9],
@@ -44,7 +40,7 @@ param_grids = {
     }
 }
 
-# Classifiers to evaluate
+# KNN classifier
 classifiers = {"KNN": KNeighborsClassifier()}
 
 # Store results
@@ -78,3 +74,13 @@ print(
     f"\nBest Classifier: {best_classifier[0]} with Accuracy: {best_classifier[3]:.4f}"
 )
 print(f"Best Hyperparameters: {best_classifier[2]}")
+
+# Save the best model and scaler
+scaler_path = "scaler_KNN.pkl"
+model_path = "best_KNN_model.pkl"
+
+joblib.dump(scaler, scaler_path)
+print(f"Scaler saved as '{scaler_path}'")
+
+joblib.dump(best_classifier[1], model_path)
+print(f"Model saved as '{model_path}'")
