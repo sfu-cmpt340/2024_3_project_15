@@ -13,12 +13,12 @@ from sklearn.metrics import (
 )
 
 # Load the pre-trained models and scalers
-KNN_MODEL = joblib.load("pkl_models/best_knn_model.pkl")
-RF_MODEL = joblib.load("pkl_models/best_random_forest_model.pkl")
-SVM_MODEL = joblib.load("pkl_models/best_svm_model.pkl")
-KNN_SCALER = joblib.load("pkl_models/scaler_KNN.pkl")
-RF_SCALER = joblib.load("pkl_models/scaler_RF.pkl")
-SVM_SCALER = joblib.load("pkl_models/scaler_SVM.pkl")
+KNN_MODEL = joblib.load("models/best_knn_model.pkl")
+RF_MODEL = joblib.load("models/best_random_forest_model.pkl")
+SVM_MODEL = joblib.load("models/best_svm_model.pkl")
+KNN_SCALER = joblib.load("models/scaler_KNN.pkl")
+RF_SCALER = joblib.load("models/scaler_RF.pkl")
+SVM_SCALER = joblib.load("models/scaler_SVM.pkl")
 
 # Feature lists
 KNN_FEATURES = [
