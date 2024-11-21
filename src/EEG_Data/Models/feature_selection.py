@@ -175,7 +175,7 @@ def calculate_robust_feature_importance(
 
 
 # Load and prepare your data
-data = pd.read_csv("../output.csv")
+data = pd.read_csv("../output/output.csv")
 X = data.drop(columns=["filename", "direction"])
 y = data["direction"]
 

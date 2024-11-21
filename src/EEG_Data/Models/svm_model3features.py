@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 # Load your data into a DataFrame
-data = pd.read_csv("../randomized_output.csv")
+data = pd.read_csv("../output/randomized_output.csv")
 
 # Separate features and labels
 X = data.drop(columns=["filename", "direction"])

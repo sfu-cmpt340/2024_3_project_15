@@ -157,7 +157,7 @@ def classify_with_models(
         print("Precision-Recall curve is not applicable for multi-class classification.")
 
 # Specify test data file path
-test_csv_path = "../test_data.csv"
+test_csv_path = "../testFiles/test_data.csv"
 
 # Map scalers, models, and feature sets for convenience
 scalers = {"knn": knn_scaler, "rf": rf_scaler, "svm": svm_scaler}

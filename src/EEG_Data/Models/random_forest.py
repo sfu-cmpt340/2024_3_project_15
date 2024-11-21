@@ -4,7 +4,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 # Load the dataset
-df = pd.read_csv("../output.csv")
+df = pd.read_csv("../output/output.csv")
 df = df.drop(
     columns=[
         "filename",

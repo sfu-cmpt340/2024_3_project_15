@@ -79,7 +79,7 @@ def classify_with_ensemble(
 
 
 # Specify test data file path
-test_csv_path = "../test_data.csv"  # Path to the CSV file with test data
+test_csv_path = "../testFiles/test_data.csv"  # Path to the CSV file with test data
 
 # Map scalers, models, and feature sets for convenience
 scalers = {"knn": knn_scaler, "rf": rf_scaler, "svm": svm_scaler}

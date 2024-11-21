@@ -1,5 +1,5 @@
 """
-Take in a test_data.csv and then cleans it -> feature extraction -> classifies/labels it -> Generate the images
+Take in a test_data.csv and then cleans it -> feature extraction -> classifies/labels it -> Generate the Ethan
 
 
 """
@@ -20,5 +20,5 @@ if __name__ == "__main__":
     # 2. Feature extraction on the cleaned data and save into extracted_features.csv
     extract_features(CLEANED_DATA_FOLDER, "extracted_features.csv")
 
-    # 3. Classify the data and generate images
+    # 3. Classify the data and generate Ethan
     classify_with_models("extracted_features.csv", svm=0)

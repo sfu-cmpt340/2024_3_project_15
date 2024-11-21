@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 # Load your data into a DataFrame
-data = pd.read_json("../output.json", lines=True)
+data = pd.read_json("../output/output.json", lines=True)
 
 # Separate features and labels
 X = data.drop(columns=["filename", "direction"])

@@ -54,7 +54,7 @@ def classify_with_models(test_csv_path, scalers, models, feature_sets):
 
 
 # Specify test data file path
-test_csv_path = "../test_data.csv"
+test_csv_path = "../testFiles/test_data.csv"
 
 # Map scalers, models, and feature sets for convenience
 scalers = {"knn": knn_scaler, "rf": rf_scaler}

@@ -5,10 +5,10 @@ Used for cleaning and processing the data into a format suitable for Azure machi
 import os
 
 import pandas as pd
-from clean_data import clean_df, get_pca
+from clean_data import get_pca
 
-directory = "./Cleaned_Data"
-output_filepath = "output.csv"
+directory = "./cleaned_Data"
+output_filepath = "output/output.csv"
 header_written = False
 
 for filename in os.listdir(directory):
