@@ -2,4 +2,5 @@ matplotlib==3.9.2
 pandas==2.2.3
 scipy==1.14.1
 mne==1.8.0
-sckit-learn==1.5.2
+sklearn
+flask
