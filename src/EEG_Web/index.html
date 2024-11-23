@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Signal Upload</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Raw EEG Signal</h1>
+        <form id="uploadForm">
+            <input type="file" id="eegFile" accept=".csv, .txt" required />
+            <button type="submit">Upload and Analyze</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('eegFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous results
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';
+
+                if (data.images) {
+                    // Display the generated images
+                    data.images.forEach(imageUrl => {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = imageUrl;
+                        imgElement.alt = 'Generated Image';
+                        imgElement.style.maxWidth = '100%';
+                        imgElement.style.marginTop = '20px';
+                        resultDiv.appendChild(imgElement);
+                    });
+                } else {
+                    resultDiv.innerHTML = '<p style="color: red;">Error occurred while processing the EEG signal.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = '<p style="color: red;">Error occurred while uploading and analyzing the EEG signal.</p>';
+            });
+        });
+    </script>
+</body>
+</html>
