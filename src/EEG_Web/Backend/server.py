@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify, send_from_directory
 import os
 import sys
 sys.path.append('../pipeline')
-from pipeline import run_pipeline  # Modify the pipeline code to run as a function
+from pipeline import run_pipeline  
 import shutil
 
 app = Flask(__name__)
-UPLOAD_FOLDER = './raw_data'
-RESULT_FOLDER = './results'
-IMAGE_FOLDER = './images'
+UPLOAD_FOLDER = '../pipeline/raw_data'
+RESULT_FOLDER = '../pipeline/results'
+IMAGE_FOLDER = '../pipelin/output_images'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)
@@ -29,7 +29,6 @@ def upload_file():
     # Run the pipeline
     run_pipeline(file_path)
 
-    # Assuming that the results (accuracy) are saved in results.txt and images in IMAGE_FOLDER
     with open(os.path.join(RESULT_FOLDER, 'results.txt'), 'r') as result_file:
         accuracy = result_file.read()
 
