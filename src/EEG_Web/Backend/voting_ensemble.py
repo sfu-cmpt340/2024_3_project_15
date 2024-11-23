@@ -1,4 +1,5 @@
 import os
+
 import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -14,13 +15,13 @@ from sklearn.metrics import (
 )
 
 # Define output path for images and metrics
-IMAGE_FOLDER = "../images"
+IMAGE_FOLDER = "./images"
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 
 # Load the pre-trained models and scalers
-KNN_MODEL = joblib.load("models/best_knn_model.pkl")
+KNN_MODEL = joblib.load("models/best_KNN_model.pkl")
 RF_MODEL = joblib.load("models/best_random_forest_model.pkl")
-SVM_MODEL = joblib.load("models/best_svm_model.pkl")
+SVM_MODEL = joblib.load("models/best_SVM_model.pkl")
 KNN_SCALER = joblib.load("models/scaler_KNN.pkl")
 RF_SCALER = joblib.load("models/scaler_RF.pkl")
 SVM_SCALER = joblib.load("models/scaler_SVM.pkl")
@@ -43,6 +44,7 @@ SVM_FEATURES = [
     "eeg_2_mean",
     "eeg_3_freq_std",
 ]
+
 
 def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
     """
@@ -96,11 +98,13 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
         )
         disp.plot(cmap=plt.cm.Blues)
         plt.title("Confusion Matrix for Voting Ensemble")
-        plt.savefig(os.path.join(IMAGE_FOLDER, 'confusion_matrix_ensemble.png'))
+        plt.savefig(os.path.join(IMAGE_FOLDER, "confusion_matrix_ensemble.png"))
         plt.close()
 
         # Classification Report for Ensemble
-        with open(os.path.join(IMAGE_FOLDER, 'classification_report_ensemble.txt'), 'w') as f:
+        with open(
+            os.path.join(IMAGE_FOLDER, "classification_report_ensemble.txt"), "w"
+        ) as f:
             f.write(classification_report(y_test, predictions_ensemble))
 
         # ROC and Precision-Recall Curves for Ensemble (if binary classification)
@@ -123,7 +127,7 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
                 "Receiver Operating Characteristic (ROC) Curve for Voting Ensemble"
             )
             plt.legend(loc="lower right")
-            plt.savefig(os.path.join(IMAGE_FOLDER, 'roc_curve_ensemble.png'))
+            plt.savefig(os.path.join(IMAGE_FOLDER, "roc_curve_ensemble.png"))
             plt.close()
 
             precision, recall, _ = precision_recall_curve(y_test, predictions_ensemble)
@@ -137,7 +141,9 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
             plt.title(
                 f"Precision-Recall Curve for Voting Ensemble: AP={average_precision:.2f}"
             )
-            plt.savefig(os.path.join(IMAGE_FOLDER, 'precision_recall_curve_ensemble.png'))
+            plt.savefig(
+                os.path.join(IMAGE_FOLDER, "precision_recall_curve_ensemble.png")
+            )
             plt.close()
         else:
             print(
@@ -156,11 +162,16 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
             )
             disp.plot(cmap=plt.cm.Blues)
             plt.title(f"Confusion Matrix for {model_name.upper()}")
-            plt.savefig(os.path.join(IMAGE_FOLDER, f'confusion_matrix_{model_name}.png'))
+            plt.savefig(
+                os.path.join(IMAGE_FOLDER, f"confusion_matrix_{model_name}.png")
+            )
             plt.close()
 
             # Classification Report
-            with open(os.path.join(IMAGE_FOLDER, f'classification_report_{model_name}.txt'), 'w') as f:
+            with open(
+                os.path.join(IMAGE_FOLDER, f"classification_report_{model_name}.txt"),
+                "w",
+            ) as f:
                 f.write(classification_report(y_test, predictions[model_name]))
 
             # ROC and Precision-Recall Curves (if binary classification)
@@ -175,7 +186,7 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
                 plt.ylabel("True Positive Rate")
                 plt.title(f"ROC Curve for {model_name.upper()}")
                 plt.legend(loc="lower right")
-                plt.savefig(os.path.join(IMAGE_FOLDER, f'roc_curve_{model_name}.png'))
+                plt.savefig(os.path.join(IMAGE_FOLDER, f"roc_curve_{model_name}.png"))
                 plt.close()
 
                 precision, recall, _ = precision_recall_curve(
@@ -193,7 +204,11 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
                 plt.title(
                     f"Precision-Recall Curve for {model_name.upper()}: AP={average_precision:.2f}"
                 )
-                plt.savefig(os.path.join(IMAGE_FOLDER, f'precision_recall_curve_{model_name}.png'))
+                plt.savefig(
+                    os.path.join(
+                        IMAGE_FOLDER, f"precision_recall_curve_{model_name}.png"
+                    )
+                )
                 plt.close()
 
     if len(predictions) == 0:
