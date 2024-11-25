@@ -1,20 +1,15 @@
 import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 
 # Load the dataset
 df = pd.read_csv("../output/output.csv")
-df = df.drop(
-    columns=[
-        "filename",
-        "eeg_1_dominant_freq",
-        "eeg_2_dominant_freq",
-        "eeg_3_dominant_freq",
-        "eeg_4_dominant_freq",
-    ]
-)
+df = df.drop(columns=["filename"])
 df = df[[col for col in df.columns if col != "direction"] + ["direction"]]
+
+# Select top 3 features
+df = df[["eeg_1_mean", "eeg_2_mean", "eeg_3freq_std", "direction"]]
 
 # Define features and target
 x = df.iloc[:, :-1]
@@ -27,13 +22,14 @@ results = []
 
 for random_state in range(1, 101):
     x_train, x_test, y_train, y_test = train_test_split(
-        x, y, train_size=0.85, test_size=0.15, random_state=random_state
+        x, y, train_size=0.8, test_size=0.2, random_state=random_state
     )
 
-    knn = KNeighborsClassifier(n_neighbors=5, weights='uniform', algorithm='auto')
+    # Instantiate and train the KNN classifier
+    clf = KNeighborsClassifier(n_neighbors=5)  # You can adjust n_neighbors as needed
 
-    knn.fit(x_train, y_train)
-    y_pred = knn.predict(x_test)
+    clf.fit(x_train, y_train)
+    y_pred = clf.predict(x_test)
     accuracy = accuracy_score(y_test, y_pred)
 
     # Store the results

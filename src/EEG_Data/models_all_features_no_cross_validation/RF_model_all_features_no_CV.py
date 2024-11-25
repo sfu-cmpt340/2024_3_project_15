@@ -5,15 +5,7 @@ from sklearn.model_selection import train_test_split
 
 # Load the dataset
 df = pd.read_csv("../output/output.csv")
-df = df.drop(
-    columns=[
-        "filename",
-        "eeg_1_dominant_freq",
-        "eeg_2_dominant_freq",
-        "eeg_3_dominant_freq",
-        "eeg_4_dominant_freq",
-    ]
-)
+df = df.drop(columns=["filename"])
 df = df[[col for col in df.columns if col != "direction"] + ["direction"]]
 
 # Define features and target

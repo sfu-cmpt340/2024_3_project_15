@@ -1,12 +1,21 @@
 import joblib
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
-from sklearn.metrics import accuracy_score, roc_curve, auc, confusion_matrix, ConfusionMatrixDisplay, classification_report, precision_recall_curve, average_precision_score
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    accuracy_score,
+    auc,
+    average_precision_score,
+    classification_report,
+    confusion_matrix,
+    precision_recall_curve,
+    roc_curve,
+)
 
 # Load the pre-trained models and scalers
 knn_model = joblib.load("pkl_models/best_knn_model.pkl")
-rf_model = joblib.load("pkl_models/best_random_forest_model.pkl")
+rf_model = joblib.load("pkl_models/best_RF_model.pkl")
 svm_model = joblib.load("pkl_models/best_svm_model.pkl")
 
 knn_scaler = joblib.load("pkl_models/scaler_KNN.pkl")
@@ -30,10 +39,9 @@ svm_features = [
     "eeg_3_freq_std",
 ]  # Replace with actual features used for SVM
 
+
 # Function to classify test data, compute accuracy, and plot results
-def classify_with_models(
-    test_csv_path, scalers, models, feature_sets
-):
+def classify_with_models(test_csv_path, scalers, models, feature_sets):
     # Load test data
     test_data = pd.read_csv(test_csv_path)
 
@@ -75,12 +83,17 @@ def classify_with_models(
     print(f"Voting Ensemble Accuracy: {accuracy_ensemble:.4f}")
 
     # Plot metrics for individual models
-    for model_name, predictions in zip(["KNN", "Random Forest", "SVM"], [predictions_knn, predictions_rf, predictions_svm]):
+    for model_name, predictions in zip(
+        ["KNN", "Random Forest", "SVM"],
+        [predictions_knn, predictions_rf, predictions_svm],
+    ):
         # Confusion Matrix
         conf_matrix = confusion_matrix(y_test, predictions, labels=[0, 1])
-        disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=["False", "True"])
+        disp = ConfusionMatrixDisplay(
+            confusion_matrix=conf_matrix, display_labels=["False", "True"]
+        )
         disp.plot(cmap=plt.cm.Blues)
-        plt.title(f'Confusion Matrix for {model_name}')
+        plt.title(f"Confusion Matrix for {model_name}")
         plt.show()
 
         # Classification Report
@@ -93,12 +106,12 @@ def classify_with_models(
             roc_auc = auc(fpr, tpr)
 
             plt.figure()
-            plt.plot(fpr, tpr, lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-            plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-            plt.xlabel('False Positive Rate')
-            plt.ylabel('True Positive Rate')
-            plt.title(f'Receiver Operating Characteristic (ROC) Curve for {model_name}')
-            plt.legend(loc='lower right')
+            plt.plot(fpr, tpr, lw=2, label=f"ROC curve (area = {roc_auc:.2f})")
+            plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+            plt.xlabel("False Positive Rate")
+            plt.ylabel("True Positive Rate")
+            plt.title(f"Receiver Operating Characteristic (ROC) Curve for {model_name}")
+            plt.legend(loc="lower right")
             plt.show()
 
         # Precision-Recall Curve (if binary classification)
@@ -107,18 +120,22 @@ def classify_with_models(
             average_precision = average_precision_score(y_test, predictions)
 
             plt.figure()
-            plt.step(recall, precision, color='b', alpha=0.2, where='post')
-            plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
-            plt.xlabel('Recall')
-            plt.ylabel('Precision')
-            plt.title(f'Precision-Recall Curve for {model_name}: AP={average_precision:.2f}')
+            plt.step(recall, precision, color="b", alpha=0.2, where="post")
+            plt.fill_between(recall, precision, step="post", alpha=0.2, color="b")
+            plt.xlabel("Recall")
+            plt.ylabel("Precision")
+            plt.title(
+                f"Precision-Recall Curve for {model_name}: AP={average_precision:.2f}"
+            )
             plt.show()
 
     # Confusion Matrix for Ensemble
     conf_matrix = confusion_matrix(y_test, predictions_ensemble, labels=[0, 1])
-    disp = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=["False", "True"])
+    disp = ConfusionMatrixDisplay(
+        confusion_matrix=conf_matrix, display_labels=["False", "True"]
+    )
     disp.plot(cmap=plt.cm.Blues)
-    plt.title('Confusion Matrix for Voting Ensemble')
+    plt.title("Confusion Matrix for Voting Ensemble")
     plt.show()
 
     # Classification Report for Ensemble
@@ -131,12 +148,18 @@ def classify_with_models(
         roc_auc = auc(fpr, tpr)
 
         plt.figure()
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver Operating Characteristic (ROC) Curve for Voting Ensemble')
-        plt.legend(loc='lower right')
+        plt.plot(
+            fpr,
+            tpr,
+            color="darkorange",
+            lw=2,
+            label=f"ROC curve (area = {roc_auc:.2f})",
+        )
+        plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("Receiver Operating Characteristic (ROC) Curve for Voting Ensemble")
+        plt.legend(loc="lower right")
         plt.show()
     else:
         print("ROC curve is not applicable for multi-class classification.")
@@ -147,14 +170,19 @@ def classify_with_models(
         average_precision = average_precision_score(y_test, predictions_ensemble)
 
         plt.figure()
-        plt.step(recall, precision, color='b', alpha=0.2, where='post')
-        plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title(f'Precision-Recall Curve for Voting Ensemble: AP={average_precision:.2f}')
+        plt.step(recall, precision, color="b", alpha=0.2, where="post")
+        plt.fill_between(recall, precision, step="post", alpha=0.2, color="b")
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.title(
+            f"Precision-Recall Curve for Voting Ensemble: AP={average_precision:.2f}"
+        )
         plt.show()
     else:
-        print("Precision-Recall curve is not applicable for multi-class classification.")
+        print(
+            "Precision-Recall curve is not applicable for multi-class classification."
+        )
+
 
 # Specify test data file path
 test_csv_path = "../testFiles/test_data.csv"

@@ -2,9 +2,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 
 # Load your data into a DataFrame
@@ -18,7 +16,7 @@ y = data["direction"]
 print(f"Dataset shape: {X.shape}")
 
 # Select features using specified indices
-selected_feature_indices = [0, 9, 26]
+selected_feature_indices = list(range(0, 36))
 selected_feature_names = X.columns[selected_feature_indices]
 X_selected = X.iloc[:, selected_feature_indices]
 print(f"Selected features: {selected_feature_names}")
@@ -29,24 +27,26 @@ X_scaled = scaler.fit_transform(X_selected)
 
 # Cross-validation setup
 k_folds = 5
-skf = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=42)
+skf = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=10)
 
-# Hyperparameter grid for KNN
+# Hyperparameter grid for Random Forest
 param_grids = {
-    "KNN": {
-        "n_neighbors": [3, 5, 7, 9],
-        "weights": ["uniform", "distance"],
-        "metric": ["euclidean", "manhattan"],
+    "RandomForest": {
+        "n_estimators": [50, 100, 200],
+        "max_depth": [None, 10, 20, 30],
+        "min_samples_split": [2, 5, 10],
+        "min_samples_leaf": [1, 2, 4],
+        "bootstrap": [True, False],
     }
 }
 
-# KNN classifier
-classifiers = {"KNN": KNeighborsClassifier()}
+# Random Forest classifier
+classifiers = {"RandomForest": RandomForestClassifier(random_state=10)}
 
 # Store results
 results = []
 
-# Evaluate each classifier with GridSearchCV
+# Evaluate the classifier with GridSearchCV
 for clf_name, clf in classifiers.items():
     print(f"\nTuning hyperparameters for {clf_name}...")
     grid_search = GridSearchCV(
@@ -74,13 +74,3 @@ print(
     f"\nBest Classifier: {best_classifier[0]} with Accuracy: {best_classifier[3]:.4f}"
 )
 print(f"Best Hyperparameters: {best_classifier[2]}")
-
-# Save the best model and scaler
-scaler_path = "scaler_KNN.pkl"
-model_path = "best_KNN_model.pkl"
-
-joblib.dump(scaler, scaler_path)
-print(f"Scaler saved as '{scaler_path}'")
-
-joblib.dump(best_classifier[1], model_path)
-print(f"Model saved as '{model_path}'")
