@@ -12,10 +12,18 @@ def load_eeg_data(filename):
     return df
 
 
-swiping_up_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_up_60_1_gilbert.csv")
-swiping_left_eeg_df = load_eeg_data("./Gilbert/museFiles/swipe_left_60_1_gilbert.csv")
-swiping_down_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_down_60_1_gilbert.csv")
-swiping_right_eeg_df = load_eeg_data("./Gilbert/museFiles/swiping_right_60_1_gilbert.csv")
+swiping_up_eeg_df = load_eeg_data(
+    "../EEG_Data/museFiles_swiping/swiping_up_60_1_jimmy.csv"
+)
+swiping_left_eeg_df = load_eeg_data(
+    "../EEG_Data/museFiles_swiping/swiping_left_60_1_jimmy.csv"
+)
+swiping_down_eeg_df = load_eeg_data(
+    "../EEG_Data/museFiles_swiping/swiping_down_60_1_jimmy.csv"
+)
+swiping_right_eeg_df = load_eeg_data(
+    "../EEG_Data/museFiles_swiping/swiping_right_60_1_jimmy.csv"
+)
 
 fig, axes = plt.subplots(2, 2, figsize=(14, 12), sharex=True)
 
@@ -29,9 +37,9 @@ dataframes = [
 
 
 for ax, df, title in zip(axes.flatten(), dataframes, titles):
-    ax.plot(df["seconds_elapsed"], df["eeg_1"], color = "blue", label="EEG 1")
-    ax.plot(df["seconds_elapsed"], df["eeg_2"], color = "orange", label="EEG 2")
-    ax.plot(df["seconds_elapsed"], df["eeg_3"], color = "green", label="EEG 3")
+    ax.plot(df["seconds_elapsed"], df["eeg_1"], color="blue", label="EEG 1")
+    ax.plot(df["seconds_elapsed"], df["eeg_2"], color="orange", label="EEG 2")
+    ax.plot(df["seconds_elapsed"], df["eeg_3"], color="green", label="EEG 3")
     ax.set_title(f"EEG Signals Over Time ({title})")
     ax.set_ylabel("EEG Signal")
     ax.legend()

@@ -4,7 +4,6 @@ import pandas as pd
 json_file = "output.json"
 data = pd.read_json(json_file, orient="records", lines=True)
 
-
 # Load the CSV file
 csv_file = "output.csv"
 data.to_csv(csv_file)
