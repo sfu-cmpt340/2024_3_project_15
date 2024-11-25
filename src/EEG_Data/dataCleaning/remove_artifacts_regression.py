@@ -42,6 +42,10 @@ def clean_eeg_data(eeg_data, timestamps, sampling_rate=256):
                 end = min(len(final_mask), i + min_window_size)
                 expanded_mask[start:end] = True
 
+        # After cleaning EEG data:
+        total_interpolations = np.sum(final_mask)
+        print(total_interpolations)
+
         artifact_segments = np.where(np.diff(expanded_mask.astype(int)))[0] + 1
         if expanded_mask[0]:
             artifact_segments = np.insert(artifact_segments, 0, 0)
@@ -61,9 +65,10 @@ def clean_eeg_data(eeg_data, timestamps, sampling_rate=256):
                 y = np.concatenate([pre_data, post_data])
                 x_new = np.arange(start_idx, end_idx)
                 cleaned_data[start_idx:end_idx] = np.interp(x_new, x, y)
-        return cleaned_data
+        return cleaned_data, total_interpolations
 
     cleaned_data = np.zeros_like(eeg_data)
+    total_interpolations = 0
     for ch in range(eeg_data.shape[1]):
         channel_data = eeg_data[:, ch]
         b, a = butter_bandpass(1, 45, sampling_rate)
@@ -71,7 +76,8 @@ def clean_eeg_data(eeg_data, timestamps, sampling_rate=256):
         for freq in [50, 60]:
             b, a = iirnotch(freq, 30.0, sampling_rate)
             filtered_data = filtfilt(b, a, filtered_data)
-        cleaned_channel = remove_artifacts(filtered_data)
+        cleaned_channel,channel_interpolations = remove_artifacts(filtered_data)
+        total_interpolations += channel_interpolations
         b, a = butter_bandpass(1, 40, sampling_rate)
         cleaned_channel = filtfilt(b, a, cleaned_channel)
         p_orig = np.percentile(channel_data, [5, 95])
@@ -81,7 +87,7 @@ def clean_eeg_data(eeg_data, timestamps, sampling_rate=256):
             cleaned_channel = cleaned_channel * scale_factor
             cleaned_channel = cleaned_channel + (np.median(channel_data) - np.median(cleaned_channel))
         cleaned_data[:, ch] = cleaned_channel
-    return cleaned_data
+    return cleaned_data, total_interpolations
 
 def load_and_prepare_data(file_path, max_rows=8000):
     """Load and prepare EEG data from CSV file with validation, processing only the first max_rows rows"""
@@ -138,6 +144,9 @@ if __name__ == "__main__":
     # Get a list of all CSV files in the directory
     csv_files = glob.glob(os.path.join(directory, "*.csv"))
 
+    # Set total number of interpolations
+    total_interpolations_all_files = 0
+
     if not csv_files:
         print(f"No CSV files found in directory: {directory}")
     else:
@@ -152,7 +161,8 @@ if __name__ == "__main__":
                 print("Data loaded successfully.")
 
                 # Clean the EEG data
-                eeg_cleaned = clean_eeg_data(eeg_data, timestamps)
+                eeg_cleaned, file_interpolations = clean_eeg_data(eeg_data, timestamps)
+                total_interpolations_all_files += file_interpolations
 
                 # Save the cleaned data to a new CSV file
                 cleaned_filename = os.path.basename(file_path).replace('.csv', '_cleaned.csv')
@@ -195,3 +205,4 @@ if __name__ == "__main__":
                 print(f"Error: Could not find the file at {file_path}")
             except Exception as e:
                 print(f"An error occurred while processing {file_path}: {str(e)}")
+    print(f"\nTotal interpolations across all files: {total_interpolations_all_files}")
