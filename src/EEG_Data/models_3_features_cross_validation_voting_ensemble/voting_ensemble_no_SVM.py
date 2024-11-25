@@ -1,7 +1,6 @@
 import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 from sklearn.metrics import (
     ConfusionMatrixDisplay,
     accuracy_score,
@@ -16,28 +15,22 @@ from sklearn.metrics import (
 # Load the pre-trained models and scalers
 knn_model = joblib.load("pkl_models/best_knn_model.pkl")
 rf_model = joblib.load("pkl_models/best_RF_model.pkl")
-svm_model = joblib.load("pkl_models/best_svm_model.pkl")
 
 knn_scaler = joblib.load("pkl_models/scaler_KNN.pkl")
 rf_scaler = joblib.load("pkl_models/scaler_RF.pkl")
-svm_scaler = joblib.load("pkl_models/scaler_SVM.pkl")
 
-# Feature lists (ensure these match the training process)
+# Feature lists
 knn_features = [
     "eeg_1_mean",
     "eeg_2_mean",
     "eeg_3_freq_std",
-]  # Replace with actual features used for KNN
+]
+
 rf_features = [
     "eeg_1_mean",
     "eeg_2_mean",
     "eeg_3_freq_std",
-]  # Replace with actual features used for RF
-svm_features = [
-    "eeg_1_mean",
-    "eeg_2_mean",
-    "eeg_3_freq_std",
-]  # Replace with actual features used for SVM
+]
 
 
 # Function to classify test data, compute accuracy, and plot results
@@ -57,7 +50,6 @@ def classify_with_models(test_csv_path, scalers, models, feature_sets):
     # Use individual models for predictions
     predictions_knn = models["knn"].predict(X_test_scaled["knn"])
     predictions_rf = models["rf"].predict(X_test_scaled["rf"])
-    predictions_svm = models["svm"].predict(X_test_scaled["svm"])
 
     # Combine predictions using majority voting
     predictions_ensemble = []
@@ -65,7 +57,6 @@ def classify_with_models(test_csv_path, scalers, models, feature_sets):
         votes = [
             predictions_knn[i],
             predictions_rf[i],
-            predictions_svm[i],
         ]
         # Majority vote
         predictions_ensemble.append(max(set(votes), key=votes.count))
@@ -73,19 +64,17 @@ def classify_with_models(test_csv_path, scalers, models, feature_sets):
     # Compute accuracy for each model and ensemble
     accuracy_knn = accuracy_score(y_test, predictions_knn)
     accuracy_rf = accuracy_score(y_test, predictions_rf)
-    accuracy_svm = accuracy_score(y_test, predictions_svm)
     accuracy_ensemble = accuracy_score(y_test, predictions_ensemble)
 
     # Print accuracy results
     print(f"KNN Model Accuracy: {accuracy_knn:.4f}")
     print(f"Random Forest Model Accuracy: {accuracy_rf:.4f}")
-    print(f"SVM Model Accuracy: {accuracy_svm:.4f}")
     print(f"Voting Ensemble Accuracy: {accuracy_ensemble:.4f}")
 
     # Plot metrics for individual models
     for model_name, predictions in zip(
         ["KNN", "Random Forest", "SVM"],
-        [predictions_knn, predictions_rf, predictions_svm],
+        [predictions_knn, predictions_rf],
     ):
         # Confusion Matrix
         conf_matrix = confusion_matrix(y_test, predictions, labels=[0, 1])
@@ -188,9 +177,9 @@ def classify_with_models(test_csv_path, scalers, models, feature_sets):
 test_csv_path = "../testFiles/test_data.csv"
 
 # Map scalers, models, and feature sets for convenience
-scalers = {"knn": knn_scaler, "rf": rf_scaler, "svm": svm_scaler}
-models = {"knn": knn_model, "rf": rf_model, "svm": svm_model}
-feature_sets = {"knn": knn_features, "rf": rf_features, "svm": svm_features}
+scalers = {"knn": knn_scaler, "rf": rf_scaler}
+models = {"knn": knn_model, "rf": rf_model}
+feature_sets = {"knn": knn_features, "rf": rf_features}
 
 # Classify test data and plot results
 classify_with_models(test_csv_path, scalers, models, feature_sets)
