@@ -5,7 +5,7 @@ from feature_extraction import extract_features
 from voting_ensemble import classify_with_models
 
 
-def run_pipeline(test_data_path):
+def run_pipeline():
     # Initialize folder paths
     RAW_DATA_FOLDER = "./raw_data"
     CLEANED_DATA_FOLDER = "./cleaned_data"

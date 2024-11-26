@@ -1,6 +1,7 @@
 import os
 
 import joblib
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.metrics import (
@@ -13,6 +14,9 @@ from sklearn.metrics import (
     precision_recall_curve,
     roc_curve,
 )
+
+matplotlib.use("Agg")
+
 
 # Define output path for images and metrics
 IMAGE_FOLDER = "./images"
@@ -94,7 +98,7 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
         # Confusion Matrix for Ensemble
         conf_matrix = confusion_matrix(y_test, predictions_ensemble, labels=[0, 1])
         disp = ConfusionMatrixDisplay(
-            confusion_matrix=conf_matrix, display_labels=["False", "True"]
+            confusion_matrix=conf_matrix, display_labels=["Up", "Down"]
         )
         disp.plot(cmap=plt.cm.Blues)
         plt.title("Confusion Matrix for Voting Ensemble")
@@ -158,7 +162,7 @@ def classify_with_models(test_csv_path, knn=1, rf=1, svm=1):
                 y_test, predictions[model_name], labels=[0, 1]
             )
             disp = ConfusionMatrixDisplay(
-                confusion_matrix=conf_matrix, display_labels=["False", "True"]
+                confusion_matrix=conf_matrix, display_labels=["Up", "Down"]
             )
             disp.plot(cmap=plt.cm.Blues)
             plt.title(f"Confusion Matrix for {model_name.upper()}")

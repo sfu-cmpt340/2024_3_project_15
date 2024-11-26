@@ -1,0 +1,76 @@
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="file"] {
+    margin: 20px 0;
+}
+
+#result {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Increased gap between images */
+}
+
+#result img {
+    width: calc(33.333% - 20px); /* 3 images per row */
+    width: 90vw; /* Viewport width */
+    max-width: 800px; /* Fallback */
+    height: auto;
+    object-fit: contain; /* Ensures full image is visible */
+    border-radius: 12px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#result img:hover {
+    transform: scale(1.02); /* Very subtle hover effect */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design */
+@media (min-width: 1800px) {
+    #result img {
+        width: calc(33.333% - 20px);
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 1800px) {
+    #result img {
+        width: calc(50% - 20px); /* 2 images per row */
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 1200px) {
+    #result img {
+        width: 90vw; /* Full viewport width on smaller screens */
+        max-width: 100%;
+    }
+}

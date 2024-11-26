@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Signal Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Raw EEG Signal</h1>
+        <form id="uploadForm">
+            <input type="file" id="eegFile" accept=".csv, .txt" multiple required />
+            <button type="submit">Upload and Analyze</button>
+            <button type="button" id="clearButton">Clear Results</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('clearButton').addEventListener('click', async function() {
+        try {
+            const response = await fetch('http://localhost:5000/clear', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Clear the result div
+                document.getElementById('result').innerHTML = '';
+                // Clear the file input
+                document.getElementById('eegFile').value = '';
+            } else {
+                alert('Failed to clear results');
+            }
+        } catch (error) {
+            console.error('Error clearing results:', error);
+            alert('Error clearing results');
+        }
+    });
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('eegFile');
+            const resultDiv = document.getElementById('result');
+
+            // Clear previous results
+            resultDiv.innerHTML = '';
+
+            const files = fileInput.files;
+            if (files.length === 0) {
+                alert('Please select at least one file to upload.');
+                return;
+            }
+
+            // Create a FormData object to send multiple files
+            const formData = new FormData();
+            
+            // Append all selected files
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/upload', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                const data = await response.json();
+
+                if (data.images) {
+                    // Clear previous images and add new ones with cache-busting
+                    data.images.forEach(imageUrl => {
+                        const imgElement = document.createElement('img');
+                        // Add timestamp to force browser to fetch new image
+                        imgElement.src = imageUrl + '?timestamp=' + new Date().getTime();
+                        imgElement.alt = 'Generated Image';
+                        imgElement.style.maxWidth = '100%';
+                        imgElement.style.marginTop = '20px';
+                        resultDiv.appendChild(imgElement);
+                    });
+                } else {
+                    resultDiv.innerHTML = '<p style="color: red;">Error occurred while processing the EEG signal.</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = '<p style="color: red;">Error occurred while uploading and analyzing the EEG signal.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
