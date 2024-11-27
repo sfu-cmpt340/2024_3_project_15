@@ -8,7 +8,7 @@ import pandas as pd
 from clean_data import get_pca
 
 directory = "./cleaned_Data"
-output_filepath = "output/output.csv"
+output_filepath = "dataProcessing/output/output.csv"
 header_written = False
 
 for filename in os.listdir(directory):

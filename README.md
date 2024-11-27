@@ -30,23 +30,23 @@ Record a short video (1:40 - 2 minutes maximum) or gif or a simple screen record
 <a name="demo"></a>
 ## 1. Example Demo
 
-This section demonstrates how to use the provided scripts for data processing, training, and visualization.
+This section demonstrates how to run the web and upload the .
 
-### Running Models
+### Start the Web server
 
-1. **Random Forest Classifier**:
-   - Navigate to the `models` directory:
+1. **Run Pipeline for cleaning data**:
+   - Navigate to the `EEG_Web` directory:
      ```bash
-     cd src/models
+     cd src/EEG_Web
      ```
-   - Execute the `random_forest.py` script:
+   - Run the `server.py` script:
      ```bash
-     python random_forest.py
+     python server.py
      ```
    - This script will:
-     - Load the processed dataset (`output.csv`).
-     - Train the Random Forest model.
-     - Display accuracy metrics and random state results.
+     - Load the cleaned EEG dataset (`output.csv`).
+     - Train a Random Forest model to classify user actions (e.g., scrolling or swiping).
+     - Display accuracy metrics and results based on different random states.
 
 2. **K-Nearest Neighbors (KNN) Classifier**:
    - From the same `models` directory, execute the `knn_classifier.py` script:
@@ -55,9 +55,9 @@ This section demonstrates how to use the provided scripts for data processing, t
      ```
    - This script will:
      - Train the KNN model using hyperparameter tuning.
-     - Output the best accuracy and average performance across different random states.
+     - Output the best accuracy along with an average performance summary across different runs.
 
-### Visualizing Data
+### Visualizing EEG Data
 
 1. **Scrolling EEG Data Visualization**:
    - Navigate to the `visualizations` directory:
@@ -68,37 +68,38 @@ This section demonstrates how to use the provided scripts for data processing, t
      ```bash
      python visualize_scrolling_eeg.py
      ```
-   - This script will generate and display EEG signal plots for scrolling actions.
+   - This script will generate EEG signal plots for scrolling actions, giving an insight into how EEG activity varies during these interactions.
 
 2. **Swiping EEG Data Visualization**:
-   - Similarly, execute the `visualize_swiping_eeg.py` script:
+   - Execute the `visualize_swiping_eeg.py` script:
      ```bash
      python visualize_swiping_eeg.py
      ```
-   - The script will visualize EEG signals associated with swiping actions.
+   - The script will produce visualizations of EEG signals during swiping actions, helping to understand the distinct patterns.
 
 ### End-to-End Example
 
-To clean data, extract features, Train the classify model by using pipline.
-1. **Navigate to the `pipline` directory**:
+This example walks through cleaning the data, extracting features, and training a classifier:
+
+1. **Navigate to the `pipeline` directory**:
    ```bash
-   cd ../pipline
+   cd ../pipeline
    ```
-2. **Run the `pipline.py` script**:
+2. **Run the `pipeline.py` script**:
    ```bash
-   python pipline.py
+   python pipeline.py
    ```
+   - This script will perform data cleaning, feature extraction, and model training in one go, offering an end-to-end demonstration of the entire workflow.
 
+### Directory Overview
 
-### What to find where
-
-Explain briefly what files are found where
+To make it easier to understand the project structure, here's a brief summary:
 
 ```bash
 repository
 ├── src                          ## source code of the package itself
   ├── EEG_Data                   ## EEG data and process
-  ├── pipeline                   ## If needed, documentation   
+  ├── EEG_Web                   ## If needed, documentation   
 ├── README.md                    ## You are here
 ├── requirements.yml             ## If you use conda
 ```
@@ -110,39 +111,35 @@ To run this project, set up your development environment by following the steps 
 
 ### Prerequisites:
 - Ensure you have **Python 3.10** or a compatible version installed.
-- Install a package manager (`pip` or `conda`).
+- Install a package manager (`pip`).
 
 ### Using `pip`:
 1. **Clone the Repository**:
     ```bash
     git clone git@github.com:sfu-cmpt340/2024_3_project_15.git
+    ```
+2. **Navigate to the Project Directory**:
+    ```bash
     cd EEGMuse
-    ```
-2. **Install Dependencies**:
-    ```bash
-    pip install matplotlib==3.9.2 pandas==2.2.3 scipy==1.14.1 mne==1.8.0 scikit-learn==1.5.2
-    ```
-
-### Using Conda:
-1. **Clone the Repository**:
-    ```bash
-    git clone https://github.com/YourDaddyy/EEGMuse.git
-    cd EEGMuse
-    ```
-2. **Create a Conda Environment**:
-    ```bash
-    conda create --name eeg_project python=3.10
-    conda activate eeg_project
     ```
 3. **Install Dependencies**:
     ```bash
-    conda install matplotlib==3.9.2 pandas==2.2.3 scipy==1.14.1 mne==1.8.0 scikit-learn==1.5.2
+    pip install -r requirements.yml
     ```
+
+   **Dependencies include**:
+   - `matplotlib==3.9.2`
+   - `pandas==2.2.3`
+   - `scipy==1.14.1`
+   - `mne==1.8.0`
+   - `scikit-learn`
+   - `flask==3.1.0`
+   - `Flask-Cors==5.0.0`
 
 ### Verifying the Setup:
 1. Test the installation by running:
     ```bash
-    python -c "import matplotlib, pandas, scipy, mne, sklearn; print('All dependencies are installed.')"
+    python -c "import matplotlib, pandas, scipy, mne, sklearn, flask; print('All dependencies are installed.')"
     ```
 
 This ensures the environment is correctly set up and ready to run the project.
@@ -162,60 +159,41 @@ Follow these steps to reproduce the results of this project:
    - Save the recordings as CSV files for preprocessing.
 
 2. **Preprocess the Data**:
-   - Navigate to the data preprocessing directory:
+   - Navigate to the `src/EEG_Data` directory:
      ```bash
-     cd src/EEG_Data/dataCleaning
+     cd src/EEG_Data/data_visualize
      ```
-   - Run the cleaning script to remove noise and artifacts:
+   - Run the `clean_data.py` script to remove noise and artifacts:
      ```bash
      python clean_data.py
      ```
    - This will generate a cleaned version of your dataset for feature extraction.
 
 3. **Extract Features**:
-   - Use feature extraction scripts to prepare the dataset for machine learning:
+   - Run the `feature_extraction.py` script to prepare the dataset for machine learning:
      ```bash
-     python ./dataAnalyze/feature_extraction.py
+     python feature_extraction.py
      ```
 
 4. **Result**:
-   - The processed dataset (`output.csv`) will be saved in the `data` directory.
-
----
+   - The processed dataset (`extracted_features.csv`) will be saved in the `src/EEG_Data` directory.
 
 ### Step 2: Model Training and Testing
 
-1. Navigate to the `models` directory:
-    ```bash
-    cd src/EEG_Data/models
-    ```
+1. **Navigate to the `src/EEG_Data` Directory**:
+   ```bash
+   cd src/EEG_Data
+   ```
 
-2. Train and test the models:
+2. **Train and Test Models**:
+   - Run the `voting_ensemble.py` script to train and test the models:
+     ```bash
+     python voting_ensemble.py
+     ```
+   - This will train multiple classifiers and combine their predictions using a voting ensemble approach.
 
-    - **Random Forest Classifier**:
-      ```bash
-      python random_forest.py
-      ```
-
-    - **K-Nearest Neighbors (KNN) Classifier**:
-      ```bash
-      python knn_classifier.py
-      ```
-
-3. Evaluate the performance:
-    - Each script outputs:
-        - Accuracy metrics.
-        - Best random state for splitting the dataset.
-        - Average accuracy across multiple random states.
-
-4. Analyze the results:
-    - Compare the performance of both models to determine which classifier works best for the given dataset.
-    - Use the evaluation metrics to identify potential improvements, such as hyperparameter tuning or additional feature engineering.
-
-## Troubleshooting
-
-- **Muse Connection Issues**: Ensure Bluetooth is properly configured and your Muse headband is charged. Use `muse-lsl list` to confirm if the device is discoverable.
-- **Dependency Errors**: Make sure all dependencies from `requirements.txt` are correctly installed. You may need to use a virtual environment to avoid conflicts.
+3. **Evaluate the Performance**:
+   - The script will output accuracy metrics and generate visualizations, such as confusion matrices and ROC curves, saved in the `src/EEG_Data` directory.
 
 
 
