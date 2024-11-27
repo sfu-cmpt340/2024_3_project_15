@@ -38,7 +38,7 @@
             console.error('Error clearing results:', error);
             alert('Error clearing results');
         }
-    });
+        });
         document.getElementById('uploadForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -53,6 +53,15 @@
                 alert('Please select at least one file to upload.');
                 return;
             }
+
+            // Display the uploading message
+            const loadingMessage = document.createElement('p');
+            loadingMessage.id = 'loadingMessage';
+            loadingMessage.textContent = 'Uploading and processing...';
+            loadingMessage.style.color = 'blue';
+            loadingMessage.style.fontSize = '18px';
+            loadingMessage.style.fontWeight = 'bold';
+            resultDiv.appendChild(loadingMessage);
 
             // Create a FormData object to send multiple files
             const formData = new FormData();
@@ -73,6 +82,10 @@
                     }
                 });
                 const data = await response.json();
+                console.log(data);
+
+                // Remove the loading message once data is processed
+                document.getElementById('loadingMessage').remove();
 
                 if (data.images) {
                     // Clear previous images and add new ones with cache-busting
@@ -85,14 +98,50 @@
                         imgElement.style.marginTop = '20px';
                         resultDiv.appendChild(imgElement);
                     });
+                }
+                if (data.text_files) {
+                    // Display text file links under the images
+                    const textContainer = document.createElement('div');
+                    textContainer.style.marginTop = '20px';
+                    textContainer.style.display = 'flex';
+                    textContainer.style.flexWrap = 'wrap';
+                    textContainer.style.justifyContent = 'space-between';
+                    textContainer.style.gap = '20px';
+
+                    data.text_files.forEach(async (fileUrl) => {
+                        try {
+                            // Fetch the text file content
+                            const textResponse = await fetch(fileUrl);
+                            const textContent = await textResponse.text();
+
+                            // Create a preformatted text block for each file
+                            const preElement = document.createElement('pre');
+                            preElement.style.background = '#f4f4f4';
+                            preElement.style.padding = '10px';
+                            preElement.style.overflowX = 'auto';
+                            preElement.style.marginBottom = '10px';
+                            preElement.textContent = `Contents of ${fileUrl.split('/').pop()}:\n\n` + textContent;
+                            textContainer.appendChild(preElement);
+                        } catch (error) {
+                            console.error('Error fetching text file:', error);
+                            const errorElement = document.createElement('p');
+                            errorElement.style.color = 'red';
+                            errorElement.textContent = `Failed to load ${fileUrl.split('/').pop()}`;
+                            textContainer.appendChild(errorElement);
+                        }
+                    });
+
+                    resultDiv.appendChild(textContainer);
                 } else {
                     resultDiv.innerHTML = '<p style="color: red;">Error occurred while processing the EEG signal.</p>';
                 }
             } catch (error) {
                 console.error('Error:', error);
+                document.getElementById('loadingMessage').remove(); // Remove the loading message on error
                 resultDiv.innerHTML = '<p style="color: red;">Error occurred while uploading and analyzing the EEG signal.</p>';
             }
         });
+
     </script>
 </body>
 </html>

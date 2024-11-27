@@ -2,7 +2,6 @@ import os
 
 from flask import Flask, jsonify, render_template, request, send_from_directory, url_for
 from flask_cors import CORS
-
 from pipeline import run_pipeline
 
 app = Flask(__name__)
@@ -57,7 +56,11 @@ def upload_file():
             for image in image_files
         ]
 
-        return jsonify({"images": image_urls, "text_files": text_files}), 200
+        text_urls = [
+            url_for("serve_file", filename=text, _external=True) for text in text_files
+        ]
+
+        return jsonify({"images": image_urls, "text_files": text_urls}), 200
     except Exception as e:
         print("Error in /upload:", str(e))
         return jsonify({"error": "Internal Server Error"}), 500
