@@ -1,10 +1,11 @@
-import pandas as pd
 from pathlib import Path
-from clean_data import clean_df
+
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from clean_data import clean_df
 
-search_dir = Path("./Jimmy/museFiles")
+search_dir = Path("../EEG_Data/museFiles_scrolling/original_data")
 
 # Get all scrolling down files
 scrolling_down_files = []

@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import pandas as pd
-from clean_data import clean_df, get_pca
 from scipy.fft import fft
 from scipy.stats import kurtosis, skew
 
@@ -20,7 +19,7 @@ def extract_fft_features(signal):
     }
 
 
-directory = "./cleaned_Data"
+directory = "../EEG_Data/museFiles_scrolling/cleaned_files"
 output_filepath = "../output/output.csv"
 all_features = []
 
