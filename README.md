@@ -132,13 +132,14 @@ Follow these steps to reproduce the results of this project:
 
 ### Step 1: Dataset Preparation
 1. **Collect EEG Data**:
-   - Download and install the MuseLab 1.9.5 onto a MAC. https://drive.google.com/drive/folders/1oy0haqORt55Lk_oW3Gn6t15Zwi0a6cpf
+   - Download and install the MuseLab 1.9.5 onto a MAC. 
+      - https://drive.google.com/drive/folders/1oy0haqORt55Lk_oW3Gn6t15Zwi0a6cpf
    - Download Mobile App: Muse:Brain Health & Sleep App from App Store.
    - Connect Muse2 with Mobile App.
    - Use the Muse Headband and the Muse app to record around 20 seconds of scrolling up or scrolling down EEG signals (See entire demo for detailed setup steps).
    - Save the recordings as a CSV file (Make sure to include 'up' or 'down' in the csv filename)
    
-2. **Preprocess the Data**:
+2. **Classifying the data through the website**:
    - Navigate to the src/EEG_Web directory:
       ```bash
       cd src/EEG_Web
@@ -156,10 +157,12 @@ Follow these steps to reproduce the results of this project:
 4. **Result**:
    - The processed dataset will be analyzed and classified with the confusion matrix, ROC curve, and precision recall curve on the web page.
 
-Notes: 
+   
+## Important Notes: ##
+- MuseLab 1.9.5 only works on a MAC device. It does not connect to the museband on a Windows device.
 - Instead of manually collecting data with the museband, you can also test by uploading the data in `EEG_Data > dataProcessing > EEG_Data > museFiles_scrolling > original_data`
-- The ROC curve and precision recall curve only displays if both scrolling up and scrolling down data is uploaded 
+- The ROC curve and precision recall curve will only display if both scrolling up and scrolling down data is uploaded 
 
 <a name="troubleshoot"></a>
 ## 4. Troubleshooting
-- If you get the `Error occured while processing the EEG signal` error message on the website, make sure the scipy version is 1.14.1 (If you can't install scipy 1.14.1, make sure your Python version is up to date)
+- If you get `Error occured while processing the EEG signal` error message on the website, make sure the scipy version is 1.14.1 (If you can't install scipy 1.14.1, make sure your Python version is up to date)
