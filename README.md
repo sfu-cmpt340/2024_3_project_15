@@ -8,7 +8,11 @@ This project focuses on collecting, cleaning, feature extracting, and classifyin
 |-----------|---------------|-------------------------|
 
 ## Video/demo/GIF
-PUT GIF HERE
+![11271-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/2074654f-ec71-4301-8148-0ce9e0cce7ab)
+
+
+[Full Demo Video](https://drive.google.com/file/d/1GscGs1FrE-tUDiTAucsPe4q-xS4oyQJT/view?usp=sharing) 
+
 
 ## Table of Contents
 1. [Demo](#demo)
