@@ -16,6 +16,7 @@ This project focuses on collecting, cleaning, and analyzing EEG data from the Mu
 ## Video/demo/GIF
 Record a short video (1:40 - 2 minutes maximum) or gif or a simple screen recording or even using PowerPoint with audio or with text, showcasing your work.
 
+[Demo Video](https://drive.google.com/file/d/1GscGs1FrE-tUDiTAucsPe4q-xS4oyQJT/view?usp=sharing)
 
 ## Table of Contents
 1. [Demo](#demo)
@@ -43,19 +44,9 @@ This section demonstrates how to run the web and upload the .
      ```bash
      python server.py
      ```
-   - This script will:
-     - Load the cleaned EEG dataset (`output.csv`).
-     - Train a Random Forest model to classify user actions (e.g., scrolling or swiping).
-     - Display accuracy metrics and results based on different random states.
-
-2. **K-Nearest Neighbors (KNN) Classifier**:
-   - From the same `models` directory, execute the `knn_classifier.py` script:
-     ```bash
-     python knn_classifier.py
-     ```
-   - This script will:
-     - Train the KNN model using hyperparameter tuning.
-     - Output the best accuracy along with an average performance summary across different runs.
+     
+2. **Upload Data and Analyze**:
+   - Upload data sets on the webpage and wait for analyze
 
 ### Visualizing EEG Data
 
@@ -70,26 +61,8 @@ This section demonstrates how to run the web and upload the .
      ```
    - This script will generate EEG signal plots for scrolling actions, giving an insight into how EEG activity varies during these interactions.
 
-2. **Swiping EEG Data Visualization**:
-   - Execute the `visualize_swiping_eeg.py` script:
-     ```bash
-     python visualize_swiping_eeg.py
-     ```
-   - The script will produce visualizations of EEG signals during swiping actions, helping to understand the distinct patterns.
-
-### End-to-End Example
-
-This example walks through cleaning the data, extracting features, and training a classifier:
-
-1. **Navigate to the `pipeline` directory**:
-   ```bash
-   cd ../pipeline
-   ```
-2. **Run the `pipeline.py` script**:
-   ```bash
-   python pipeline.py
-   ```
-   - This script will perform data cleaning, feature extraction, and model training in one go, offering an end-to-end demonstration of the entire workflow.
+2. **Visualization the result**:
+   - After analyze, web will output the visualization for the different models result.
 
 ### Directory Overview
 
@@ -155,47 +128,29 @@ Follow these steps to reproduce the results of this project:
 
 ### Step 1: Dataset Preparation
 1. **Collect EEG Data**:
+   - Download and install the MuseLab to OS. https://drive.google.com/drive/folders/1oy0haqORt55Lk_oW3Gn6t15Zwi0a6cpf
+   - Download Mobile App: Muse:Brain Health & Sleep App from App Store.
+   - Connect Muse2 with Mobile App.
    - Use the Muse2 Brain Sensing Headband and the Muse Direct app to record raw EEG signals.
    - Save the recordings as CSV files for preprocessing.
 
 2. **Preprocess the Data**:
-   - Navigate to the `src/EEG_Data` directory:
+   - Navigate to the `src/EEG_Web` directory:
      ```bash
-     cd src/EEG_Data/data_visualize
+     cd src/EEG_Web
      ```
-   - Run the `clean_data.py` script to remove noise and artifacts:
+   - Run the `server.py` script to start the web application:
      ```bash
-     python clean_data.py
+     python server.py
      ```
-   - This will generate a cleaned version of your dataset for feature extraction.
+   - This will initiate a web application that running the EEG data processing, analyzing.
+   - Click the link in the termianl to open the web page.
 
-3. **Extract Features**:
-   - Run the `feature_extraction.py` script to prepare the dataset for machine learning:
-     ```bash
-     python feature_extraction.py
-     ```
-
+3. **Upload Data Set**:
+   - Click 'Upload and Analyze' button to upload the recording CSV data and wait:
+     
 4. **Result**:
-   - The processed dataset (`extracted_features.csv`) will be saved in the `src/EEG_Data` directory.
-
-### Step 2: Model Training and Testing
-
-1. **Navigate to the `src/EEG_Data` Directory**:
-   ```bash
-   cd src/EEG_Data
-   ```
-
-2. **Train and Test Models**:
-   - Run the `voting_ensemble.py` script to train and test the models:
-     ```bash
-     python voting_ensemble.py
-     ```
-   - This will train multiple classifiers and combine their predictions using a voting ensemble approach.
-
-3. **Evaluate the Performance**:
-   - The script will output accuracy metrics and generate visualizations, such as confusion matrices and ROC curves, saved in the `src/EEG_Data` directory.
-
-
+   - The processed dataset will be analyzed and output the results on the web page.
 
 <a name="guide"></a>
 ## 4. Guidance
